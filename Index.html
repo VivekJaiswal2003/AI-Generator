@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Article Generator</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 700px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      input {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        font-size: 16px;
+        margin-bottom: 15px;
+        outline: none;
+      }
+
+      input:focus {
+        border-color: #667eea;
+      }
+
+      button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        background: #667eea;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background: #4b5fd6;
+      }
+
+      #loading {
+        display: none;
+        text-align: center;
+        margin-top: 20px;
+        font-weight: bold;
+        color: #667eea;
+      }
+
+      #result {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f4f4f4;
+        border-radius: 10px;
+        white-space: pre-wrap;
+        line-height: 1.7;
+        max-height: 400px;
+        overflow: auto;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 13px;
+        color: #777;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>🤖 AI Article Generator</h1>
+
+      <input type="text" id="topic" placeholder="Enter article topic..." />
+
+      <button onclick="generateArticle()">Generate Article</button>
+
+      <div id="loading">Generating article...</div>
+
+      <div id="result"></div>
+
+      <footer>Powered by n8n + Gemini AI</footer>
+    </div>
+
+    <script>
+      const webhook =
+        "https://jaiswal12345.app.n8n.cloud/webhook/Artical-generator";
+      async function generateArticle() {
+        const topic = document.getElementById("topic").value.trim();
+
+        if (!topic) {
+          alert("Please enter a topic.");
+          return;
+        }
+
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("result").innerHTML = "";
+
+        try {
+          const response = await fetch(webhook, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              topic: topic,
+            }),
+          });
+
+          const data = await response.text();
+
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("result").innerHTML = data;
+        } catch (err) {
+          document.getElementById("loading").style.display = "none";
+
+          document.getElementById("result").innerHTML =
+            "❌ Error: " + err.message;
+        }
+      }
+
+      document
+        .getElementById("topic")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            generateArticle();
+          }
+        });
+    </script>
+  </body>
+</html>
